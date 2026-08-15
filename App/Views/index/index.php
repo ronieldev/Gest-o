@@ -76,7 +76,7 @@ require __DIR__ . '/../../config/variables.php';
 
                 <div class="d-flex justify-content-center align-items-center">
 
-                    <p>Copyright © 2022 | Todos os Direitos Reservados</p>
+                    <p>Copyright © 2026 | Todos os Direitos Reservados</p>
 
                 </div>
 

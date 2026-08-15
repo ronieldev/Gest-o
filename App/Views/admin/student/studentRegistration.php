@@ -88,7 +88,7 @@
 
                                 <div class="form-group col-md-4">
                                     <label for="birthDate">Data Nascimento:</label>
-                                    <input name="birthDate" id="birthDate" type="date" max="2006-01-31" min="1940-01-31" class="form-control" id="birthDate" placeholder="" required>
+                                    <input name="birthDate" id="birthDate" type="date"  class="form-control" id="birthDate" placeholder="" required>
                                 </div>
 
                                 <div class="form-group col-md-4">
