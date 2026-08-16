@@ -18,6 +18,11 @@
                                     <span class="box-icon"><i class="fas fa-user-friends"></i></span> Dados da turma
                                 </a>
 
+                                <!-- NOVO BOTÃO DE CHAMADA AQUI -->
+                                <a class="collapsed" href="#" data-toggle="collapse" aria-expanded="false" data-target="#class-attendance-accordion">
+                                    <span class="box-icon"><i class="fas fa-clipboard-list"></i></span> Chamada
+                                </a>
+
                                 <?php
 
                                 if (isset($_SESSION['Admin']) && $_SESSION['Admin']['hierarchyFunction'] <= 2) {
@@ -199,6 +204,90 @@
                     </div>
 
                 </div>
+
+                <!-- INÍCIO DO NOVO PAINEL DE CHAMADA AQUI -->
+                <div class="col-lg-11 mx-auto collapse" id="class-attendance-accordion" data-parent="#main-accordion-class">
+                    <div class="col-lg-12 col-sm-11 mx-auto mb-3">
+                        <div class="row d-flex align-items-center p-0">
+                            <div class="col-sm-12 p-0">
+                                <h5 class="mt-2">Realizar Chamada</h5>
+                                <hr>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <form id="formChamada" class="col-lg-12 p-0" action= "/admin/gestao/turma/perfil-turma/chamada/inserir" method="POST">
+                                <input type="hidden" name="classId" value="<?= $this->view->classId ?>">
+                                
+                                <div class="form-group col-md-4 p-0">
+                                    <label class="font-weight-bold">Data da Aula:</label>
+                                    <input type="date" name="dataChamada" class="form-control" required>
+                                </div>
+
+                                <div class="table-responsive mt-3">
+                                    <table class="table table-hover table-borderless table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Nome do Aluno</th>
+                                                <th scope="col">Presença / Justificativa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody  id="listaAlunosChamada">
+    <?php if (isset($this->view->listStudent) && count($this->view->listStudent) > 0) { ?>
+        
+        <?php foreach ($this->view->listStudent as $key => $student) { ?>
+            <tr>
+                <!-- Nome do Aluno -->
+                <td class="align-middle font-weight-bold">
+                    <!-- ID do aluno escondido para ser enviado ao banco -->
+                    <input type="hidden" name="id_aluno[]" value="<?= $student->enrollment_id ?>">
+                    <?= $student->name ?>
+                </td>
+
+                <!-- Campos de Presença e Justificativa -->
+                <td class="d-flex align-items-center border-0">
+                    <select name="situacao[]" class="form-control form-control-sm mr-2" style="max-width: 130px;" onchange="mostrarJustificativa(this)">
+                        <option value="P">Presente (P)</option>
+                        <option value="F">Falta (F)</option>
+                        <option value="J">Justificada (J)</option>
+                    </select>
+
+                    <input type="text" name="justificativa[]" class="form-control form-control-sm" placeholder="Motivo da falta..." style="display: none; min-width: 180px;">
+                </td>
+            </tr>
+        <?php } ?>
+        
+    <?php } else { ?>
+        <tr>
+            <td colspan="2" class="text-center text-muted">
+                <i class="fas fa-exclamation-circle mr-2"></i> Nenhum aluno encontrado nesta turma.
+            </td>
+        </tr>
+    <?php } ?>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-right mt-4">
+                                    <button type="button" class="btn btn-outline-secondary mr-2"
+                                        id="btnImprimirChamada"
+                                        data-turma="<?= htmlspecialchars($this->view->classData[0]->series_acronym . 'ª ' . $this->view->classData[0]->ballot . ' ' . $this->view->classData[0]->course . ' ' . $this->view->classData[0]->shift, ENT_QUOTES, 'UTF-8') ?>"
+                                        data-professor="<?= htmlspecialchars($_SESSION['Teacher']['name'] ?? 'Administração', ENT_QUOTES, 'UTF-8') ?>"
+                                        data-alunos="<?= htmlspecialchars(json_encode(array_map(function ($student) {
+                                                            return ['nome' => $student->name];
+                                                        }, $this->view->listStudent)), ENT_QUOTES, 'UTF-8') ?>"
+                                        onclick="imprimirChamada(this)">
+                                        <i class="fas fa-print"></i> Imprimir Frequência
+                                    </button>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-save"></i> Salvar Chamada
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIM DO NOVO PAINEL DE CHAMADA -->
 
 
                 <div class="col-lg-11 mx-auto collapse" id="class-discipline-accordion" data-parent="#main-accordion-class">

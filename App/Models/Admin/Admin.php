@@ -40,10 +40,10 @@ class Admin extends People
      */
     public function insert()
     {
-        $query = "INSERT INTO administrador 
-            (nome_administrador, cpf_administrador, data_nascimento_administrador, naturalidade_administrador, foto_perfil_administrador, nacionalidade_administrador, fk_id_sexo_administrador, fk_id_tipo_sanguineo_administrador, fk_id_pcd_administrador, fk_id_endereco_administrador, fk_id_telefone_administrador , codigo_acesso , fk_id_administrador_hierarquia_funcao , email_administrador, fk_id_situacao_conta_administrador) 
-            VALUES 
-            (:adminName, :cpf, :birthDate, :naturalness, :profilePhoto, :nationality, :fk_id_sex, :fk_id_blood_type, :fk_id_pcd, :fk_id_address, :fk_id_telephone , :accessCode , :fk_id_hierarchy_function , :email, :fk_id_account_state)";
+        $query = "INSERT INTO administrador
+            (nome_administrador, cpf_administrador, data_nascimento_administrador, naturalidade_administrador, foto_perfil_administrador, nacionalidade_administrador, fk_id_sexo_administrador, fk_id_tipo_sanguineo_administrador, fk_id_pcd_administrador, fk_id_endereco_administrador, fk_id_telefone_administrador , codigo_acesso , fk_id_administrador_hierarquia_funcao , fk_id_escola , email_administrador, fk_id_situacao_conta_administrador)
+            VALUES
+            (:adminName, :cpf, :birthDate, :naturalness, :profilePhoto, :nationality, :fk_id_sex, :fk_id_blood_type, :fk_id_pcd, :fk_id_address, :fk_id_telephone , :accessCode , :fk_id_hierarchy_function , :fk_id_school , :email, :fk_id_account_state)";
 
         $stmt = $this->db->prepare($query);
 
@@ -62,6 +62,7 @@ class Admin extends People
         $stmt->bindValue(':fk_id_telephone', $this->__get('fk_id_telephone'));
         $stmt->bindValue(':fk_id_account_state', 1);
         $stmt->bindValue(':fk_id_hierarchy_function', $this->__get('fk_id_hierarchy_function'));
+        $stmt->bindValue(':fk_id_school', $this->__get('fk_id_school'));
 
         $stmt->execute();
     }

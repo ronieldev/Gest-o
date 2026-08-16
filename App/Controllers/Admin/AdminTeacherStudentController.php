@@ -619,5 +619,98 @@ class AdminTeacherStudentController extends Action
 
         $this->render('student/components/studentsAverage', 'SimpleLayout');
     }
-  
+
+
+    public function chamadaInsert()
+    {
+        $classId = $_POST['classId'] ?? $_GET['classId'] ?? null;
+        $dataAula = $_POST['dataChamada'] ?? null;
+        $alunos = $_POST['id_aluno'] ?? [];
+        $situacoes = $_POST['situacao'] ?? [];
+        $justificativas = $_POST['justificativa'] ?? [];
+
+        header('Content-Type: application/json');
+
+        if ($classId && $dataAula && count($alunos) > 0) {
+            try {
+                $conexao = \App\Connection::getDb();
+
+                $checkQuery = "SELECT id_chamada, fk_id_aluno FROM chamadas WHERE fk_id_turma = :id_turma AND data_aula = :data_aula";
+                $checkStmt = $conexao->prepare($checkQuery);
+                $checkStmt->bindValue(':id_turma', $classId);
+                $checkStmt->bindValue(':data_aula', $dataAula);
+                $checkStmt->execute();
+
+                $existentes = [];
+                foreach ($checkStmt->fetchAll(\PDO::FETCH_ASSOC) as $registro) {
+                    $existentes[$registro['fk_id_aluno']] = $registro['id_chamada'];
+                }
+
+                $insertQuery = "INSERT INTO chamadas (fk_id_aluno, fk_id_turma, data_aula, situacao, justificativa)
+                          VALUES (:id_aluno, :id_turma, :data_aula, :situacao, :justificativa)";
+                $updateQuery = "UPDATE chamadas SET situacao = :situacao, justificativa = :justificativa WHERE id_chamada = :id_chamada";
+
+                $insertStmt = $conexao->prepare($insertQuery);
+                $updateStmt = $conexao->prepare($updateQuery);
+
+                $atualizados = 0;
+
+                foreach ($alunos as $index => $idAluno) {
+                    $situacao = $situacoes[$index] ?? null;
+                    $justificativa = ($situacao === 'J' && !empty($justificativas[$index]))
+                        ? $justificativas[$index]
+                        : null;
+
+                    if (isset($existentes[$idAluno])) {
+                        $updateStmt->bindValue(':situacao', $situacao);
+                        $updateStmt->bindValue(':justificativa', $justificativa);
+                        $updateStmt->bindValue(':id_chamada', $existentes[$idAluno]);
+                        $updateStmt->execute();
+                        $atualizados++;
+                    } else {
+                        $insertStmt->bindValue(':id_aluno', $idAluno);
+                        $insertStmt->bindValue(':id_turma', $classId);
+                        $insertStmt->bindValue(':data_aula', $dataAula);
+                        $insertStmt->bindValue(':situacao', $situacao);
+                        $insertStmt->bindValue(':justificativa', $justificativa);
+                        $insertStmt->execute();
+                    }
+                }
+
+                $mensagem = $atualizados > 0
+                    ? 'Chamada já existente para esta data foi atualizada com sucesso!'
+                    : 'Chamada salva com sucesso!';
+
+                echo json_encode(['sucesso' => true, 'mensagem' => $mensagem]);
+            } catch (\PDOException $e) {
+                error_log('Erro ao salvar chamada: ' . $e->getMessage());
+                echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao salvar a chamada.']);
+            }
+        } else {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Dados incompletos.']);
+        }
+        exit;
+    }
+
+
+    public function chamadaHistorico()
+    {
+        $enrollmentId = $_GET['enrollmentId'] ?? null;
+
+        $conexao = \App\Connection::getDb();
+
+        $query = "SELECT id_chamada, data_aula, situacao, justificativa FROM chamadas WHERE fk_id_aluno = :enrollmentId ORDER BY data_aula DESC";
+        $stmt = $conexao->prepare($query);
+        $stmt->bindValue(':enrollmentId', $enrollmentId);
+        $stmt->execute();
+
+        $chamadaList = $stmt->fetchAll(\PDO::FETCH_OBJ);
+
+        $this->view->chamadaList = $chamadaList;
+        $this->view->totalPresenca = count(array_filter($chamadaList, fn($chamada) => $chamada->situacao === 'P'));
+        $this->view->totalFalta = count(array_filter($chamadaList, fn($chamada) => $chamada->situacao === 'F'));
+        $this->view->totalJustificada = count(array_filter($chamadaList, fn($chamada) => $chamada->situacao === 'J'));
+
+        $this->render('student/components/chamadaList', 'SimpleLayout');
+    }
 }

@@ -101,5 +101,7 @@ require __DIR__ . '/../../config/variables.php';
 
 <script src="<?= $app_url ?>/assets/js/utilities/Bulletin.js"></script>
 
+<script src="<?= $app_url ?>/assets/js/utilities/Chamada.js"></script>
+
 
 </html>

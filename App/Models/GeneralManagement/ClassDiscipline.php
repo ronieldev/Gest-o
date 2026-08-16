@@ -557,8 +557,85 @@ class ClassDiscipline extends Model
 
 
     /**
+     * Retorna as disciplinas de turma (professor + turma + disciplina) disponíveis para planejamento,
+     * restritas às disciplinas já cadastradas na grade curricular
+     *
+     * @return array
+     */
+    public function subjectsAvailablePlanning()
+    {
+
+        $query =
+
+            "SELECT
+
+            turma_disciplina.id_turma_disciplina AS option_value ,
+
+            CONCAT(professor.nome_professor, ' - ', serie.sigla, cedula_turma.cedula, curso.sigla, ' ', turno.nome_turno, ' - ', disciplina.nome_disciplina) AS option_text
+
+            FROM turma_disciplina
+
+            INNER JOIN grade_curricular ON(grade_curricular.fk_id_disciplina = turma_disciplina.fk_id_disciplina)
+            INNER JOIN professor ON(turma_disciplina.fk_id_professor = professor.id_professor)
+            INNER JOIN disciplina ON(turma_disciplina.fk_id_disciplina = disciplina.id_disciplina)
+            INNER JOIN turma ON(turma_disciplina.fk_id_turma = turma.id_turma)
+            INNER JOIN serie ON(turma.fk_id_serie = serie.id_serie)
+            INNER JOIN cedula_turma ON(turma.fk_id_cedula = cedula_turma.id_cedula_turma)
+            INNER JOIN curso ON(turma.fk_id_curso = curso.id_curso)
+            INNER JOIN turno ON(turma.fk_id_turno = turno.id_turno)
+
+            ORDER BY professor.nome_professor
+
+        ";
+
+        return $this->speedingUp($query);
+    }
+
+
+    /**
+     * Retorna os detalhes (professor, turma e disciplina) de uma disciplina de turma específica
+     *
+     * @return object|false
+     */
+    public function readDetails()
+    {
+
+        $query =
+
+            "SELECT
+
+            professor.nome_professor AS teacher_name ,
+            disciplina.nome_disciplina AS discipline_name ,
+            serie.sigla AS acronym_series ,
+            cedula_turma.cedula AS ballot ,
+            curso.sigla AS course ,
+            turno.nome_turno AS shift
+
+            FROM turma_disciplina
+
+            INNER JOIN professor ON(turma_disciplina.fk_id_professor = professor.id_professor)
+            INNER JOIN disciplina ON(turma_disciplina.fk_id_disciplina = disciplina.id_disciplina)
+            INNER JOIN turma ON(turma_disciplina.fk_id_turma = turma.id_turma)
+            INNER JOIN serie ON(turma.fk_id_serie = serie.id_serie)
+            INNER JOIN cedula_turma ON(turma.fk_id_cedula = cedula_turma.id_cedula_turma)
+            INNER JOIN curso ON(turma.fk_id_curso = curso.id_curso)
+            INNER JOIN turno ON(turma.fk_id_turno = turno.id_turno)
+
+            WHERE turma_disciplina.id_turma_disciplina = :classDisciplineId
+
+        ";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':classDisciplineId', $this->__get('classDisciplineId'));
+        $stmt->execute();
+
+        return $stmt->fetch(\PDO::FETCH_OBJ);
+    }
+
+
+    /**
      * Deletar disciplina da turma
-     * 
+     *
      * @return array
      */
     public function delete()

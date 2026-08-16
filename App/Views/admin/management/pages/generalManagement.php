@@ -57,6 +57,25 @@
                     </div>
                 </div>
 
+                <div class="card-deck mt-4">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Grade Curricular</h5>
+                            <p class="card-text">Cadastre as aulas da grade curricular, com carga horária e anexos.</p>
+                            <a href='/admin/gestao/grade-curricular' class="btn btn-primary">Acessar <i class="fas fa-arrow-circle-right ml-3"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Planejamento</h5>
+                            <p class="card-text">Atribua aulas da grade curricular aos professores em cada turma.</p>
+                            <a href='/admin/gestao/planejamento' class="btn btn-primary">Acessar <i class="fas fa-arrow-circle-right ml-3"></i></a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>

@@ -209,9 +209,21 @@
 
                                     <div id="emailField" class="form-group col-md-6">
                                         <label for="email">Hierarquia:</label>
-                                        <select id="hierarchyFunction" name="hierarchyFunction" class="form-control custom-select is-valid">
+                                        <select id="hierarchyFunction" name="hierarchyFunction" class="form-control custom-select is-valid" required>
 
-                                            <?php foreach ($this->listHierarchyFunction as $key => $value) { ?>
+                                            <?php foreach ($this->view->listHierarchyFunction as $key => $value) { ?>
+
+                                                <option value="<?= $value->option_value ?>"><?= $value->option_text ?></option>
+                                            <?php } ?>
+
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <label for="school">Escola:</label>
+                                        <select id="school" name="school" class="form-control custom-select is-valid" required>
+
+                                            <?php foreach ($this->view->listSchool as $key => $value) { ?>
 
                                                 <option value="<?= $value->option_value ?>"><?= $value->option_text ?></option>
                                             <?php } ?>

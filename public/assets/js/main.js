@@ -169,6 +169,90 @@ $("#discipline #buttonAddDiscipline").on("click", function (e) {
 })
 
 
+$("#curriculum-grid #buttonAddCurriculumGrid").on("click", function (e) {
+
+    let $formData = new FormData($("#addCurriculumGrid")[0])
+
+    $.ajax({
+        url: "/admin/gestao/grade-curricular/inserir",
+        type: "POST",
+        data: $formData,
+        contentType: false,
+        processData: false,
+        success: data => {
+
+            $("#addCurriculumGrid")[0].reset()
+            tools.showToast("Grade curricular adicionada", "bg-success")
+            application.loadListElements("containerListCurriculumGrid", "/admin/gestao/grade-curricular/lista")
+
+        },
+
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+
+    })
+
+})
+
+
+$(document).on("click", "#buttonAddAttachment", function (e) {
+
+    let curriculumGridId = $(this).attr("curriculumGridId")
+    let $formData = new FormData()
+
+    $.each($(`#inputNewAttachment${curriculumGridId}`)[0].files, (i, file) => $formData.append("anexos[]", file))
+    $formData.append("curriculumGridId", curriculumGridId)
+
+    $.ajax({
+        url: "/admin/gestao/grade-curricular/anexo/inserir",
+        type: "POST",
+        data: $formData,
+        contentType: false,
+        processData: false,
+        success: data => {
+
+            tools.showToast("Anexo adicionado", "bg-success")
+            application.showModal(`gradeCurricular${curriculumGridId}`, "/admin/gestao/grade-curricular/dados", "containerModal", "#modalCurriculumGrid")
+
+        },
+
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+
+    })
+
+})
+
+
+$(document).on("click", ".delete-attachment-icon", function (e) {
+
+    let attachmentId = $(this).attr("attachmentId")
+    let $row = $(this).closest("[id^='attachment']")
+
+    $.ajax({
+        url: "/admin/gestao/grade-curricular/anexo/deletar",
+        type: "POST",
+        data: { attachmentId: attachmentId },
+        success: data => {
+
+            $row.remove()
+            tools.showToast("Anexo removido", "bg-danger")
+
+        },
+
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+
+    })
+
+})
+
+
+$("#planning #buttonAddPlanning").on("click", function (e) {
+
+    application.addSinglePart("#addPlanning", "/admin/gestao/planejamento/inserir", "Planejamento adicionado")
+    application.loadListElements("containerListPlanning", "/admin/gestao/planejamento/lista")
+
+})
+
+
 $(document).on("click", "#addWarning #buttonAddWarning", function (e) {
     application.addSinglePart("#addWarning", "/admin/gestao/turma/perfil-turma/aviso/inserir", "Aviso adicionado")
 })
@@ -264,6 +348,16 @@ $(document).on('click', "#profileClassModal [data-target='#class-note-history']"
 
 $("#discipline #collapseListDiscipline").on("click", function (e) {
     application.loadListElements("containerListDiscipline", "/admin/gestao/disciplina/lista")
+})
+
+
+$("#curriculum-grid #collapseListCurriculumGrid").on("click", function (e) {
+    application.loadListElements("containerListCurriculumGrid", "/admin/gestao/grade-curricular/lista")
+})
+
+
+$("#planning #collapseListPlanning").on("click", function (e) {
+    application.loadListElements("containerListPlanning", "/admin/gestao/planejamento/lista")
 })
 
 
@@ -375,6 +469,11 @@ $(document).on("click", "#profileStudentModal [data-target='#class-profile-lack'
 })
 
 
+$(document).on("click", "#profileStudentModal [data-target='#class-profile-frequencia']", function (e) {
+    application.loadListElements("containerListFrequencia", "/admin/gestao/turma/perfil-turma/aluno/frequencia/lista", "#frequenciaEnrollmentId")
+})
+
+
 $(document).on("click", "#profileStudentModal [data-target='#class-profile-bulletin']", function (e) {
     application.loadListElements("containerBulletin", "/admin/gestao/turma/perfil-turma/aluno/boletim", "#addLack")
 })
@@ -445,6 +544,16 @@ $(document).on("click", "#profileStudentModal #student-exam [data-target='#add-r
 
 $(document).on("click", "#discipline tr", function () {
     application.showModal(this.id, "/admin/gestao/disciplina/dados", "containerModal", "#modalDiscipline")
+})
+
+
+$(document).on("click", "#curriculum-grid tr", function () {
+    application.showModal(this.id, "/admin/gestao/grade-curricular/dados", "containerModal", "#modalCurriculumGrid")
+})
+
+
+$(document).on("click", "#planning tr", function () {
+    application.showModal(this.id, "/admin/gestao/planejamento/dados", "containerModal", "#modalPlanning")
 })
 
 
@@ -582,6 +691,16 @@ $("#seekDiscipline input[name='seekName']").keyup(function (e) {
     timeout = setTimeout(() => application.loadListElements("containerListDiscipline", "/admin/gestao/disciplina/buscar", "#seekDiscipline"), 1000)
 })
 
+$("#seekCurriculumGrid input[name='seekName']").keyup(function (e) {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => application.loadListElements("containerListCurriculumGrid", "/admin/gestao/grade-curricular/buscar", "#seekCurriculumGrid"), 1000)
+})
+
+$("#seekPlanning input[name='seekName']").keyup(function (e) {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => application.loadListElements("containerListPlanning", "/admin/gestao/planejamento/buscar", "#seekPlanning"), 1000)
+})
+
 
 $("#seekTeacher input[name='name']").keyup(function (e) {
     if (timeout) clearTimeout(timeout)
@@ -653,6 +772,8 @@ $("#seekClass .custom-select").change(() => application.loadListElements("contai
 
 
 $("#seekDiscipline select[name='seekModality']").change(() => application.loadListElements("containerListDiscipline", "/admin/gestao/disciplina/buscar", "#seekDiscipline"))
+
+$("#seekCurriculumGrid select[name='seekModality']").change(() => application.loadListElements("containerListCurriculumGrid", "/admin/gestao/grade-curricular/buscar", "#seekCurriculumGrid"))
 
 
 $("#seekStudent select").change(() => application.loadListElements("containerListStudent", "/admin/aluno/lista/buscar", "#seekStudent"))
@@ -773,7 +894,7 @@ $("[data-target='#teacher-registration-finishing']").on("click", function (e) {
 
 
 $("[data-target='#admin-registration-finishing']").on("click", function (e) {
-    validation.checkAllFields("#addAdmin", 17, "#buttonAddAdmin")
+    validation.checkAllFields("#addAdmin", 18, "#buttonAddAdmin")
 })
 
 

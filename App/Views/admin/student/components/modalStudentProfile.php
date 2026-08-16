@@ -74,6 +74,10 @@ require __DIR__ . '../../../../../config/variables.php';
                                                 <span class="box-icon"><i class="fas fa-tasks mr-3"></i></span> Faltas
                                             </a>
 
+                                            <a class="collapsed" href="#" data-toggle="collapse" aria-expanded="false" data-target="#class-profile-frequencia">
+                                                <span class="box-icon"><i class="fas fa-calendar-check mr-3"></i></span> Frequência
+                                            </a>
+
                                             <a class="collapsed" href="#" data-toggle="collapse" aria-expanded="false" data-target="#class-profile-disciplineFinalData">
                                                 <span class="box-icon"><i class="fab fa-buffer mr-3"></i></span> Média final
                                             </a>
@@ -994,6 +998,47 @@ require __DIR__ . '../../../../../config/variables.php';
 
                         </div>
 
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-11 mx-auto collapse" id="class-profile-frequencia" data-parent="#main-accordion-student">
+
+                <div class="col-lg-12 mb-3">
+
+                    <div class="row">
+
+                        <div class="col-lg-12 p-0">
+                            <h5 class="mt-2">Frequência do aluno</h5>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-lg-12 p-0">
+
+                    <input value="<?= $this->view->studentDataEnrollment[0]->enrollment_id ?>" type="hidden" id="frequenciaEnrollmentId" name="enrollmentId">
+
+                    <div class="table-responsive">
+
+                        <table class="table col-lg-12 col-sm-10 mx-auto table-borderless table-striped table-hover" id="frequencia-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th class="text-left" scope="col">Data</th>
+                                    <th scope="col">Situação</th>
+                                    <th class="text-left" scope="col">Justificativa</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody containerListFrequencia></tbody>
+
+                        </table>
 
                     </div>
 

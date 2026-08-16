@@ -360,6 +360,106 @@ class Route extends Bootstrap
 			'action' => 'disciplineAvailable'
 		);
 
+		// Rotas referente a grade curricular no portal do administrador
+
+		$routes['adminCurriculumGridManagement'] = array(
+			'route' => '/admin/gestao/grade-curricular',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridManagement'
+		);
+
+		$routes['adminCurriculumGridInsert'] = array(
+			'route' => '/admin/gestao/grade-curricular/inserir',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridInsert'
+		);
+
+		$routes['adminCurriculumGridList'] = array(
+			'route' => '/admin/gestao/grade-curricular/lista',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridList'
+		);
+
+		$routes['adminCurriculumGridUpdate'] = array(
+			'route' => '/admin/gestao/grade-curricular/atualizar',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridUpdate'
+		);
+
+		$routes['adminCurriculumGridDelete'] = array(
+			'route' => '/admin/gestao/grade-curricular/deletar',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridDelete'
+		);
+
+		$routes['adminCurriculumGridSeek'] = array(
+			'route' => '/admin/gestao/grade-curricular/buscar',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridSeek'
+		);
+
+		$routes['adminCurriculumGridData'] = array(
+			'route' => '/admin/gestao/grade-curricular/dados',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridData'
+		);
+
+		$routes['adminCurriculumGridAttachmentInsert'] = array(
+			'route' => '/admin/gestao/grade-curricular/anexo/inserir',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridAttachmentInsert'
+		);
+
+		$routes['adminCurriculumGridAttachmentDelete'] = array(
+			'route' => '/admin/gestao/grade-curricular/anexo/deletar',
+			'controller' => 'Admin\\AdminCurriculumGridController',
+			'action' => 'curriculumGridAttachmentDelete'
+		);
+
+		// Rotas referente ao planejamento no portal do administrador
+
+		$routes['adminPlanningManagement'] = array(
+			'route' => '/admin/gestao/planejamento',
+			'controller' => 'Admin\\AdminPlanningController',
+			'action' => 'planningManagement'
+		);
+
+		$routes['adminPlanningInsert'] = array(
+			'route' => '/admin/gestao/planejamento/inserir',
+			'controller' => 'Admin\\AdminPlanningController',
+			'action' => 'planningInsert'
+		);
+
+		$routes['adminPlanningList'] = array(
+			'route' => '/admin/gestao/planejamento/lista',
+			'controller' => 'Admin\\AdminPlanningController',
+			'action' => 'planningList'
+		);
+
+		$routes['adminPlanningUpdate'] = array(
+			'route' => '/admin/gestao/planejamento/atualizar',
+			'controller' => 'Admin\\AdminPlanningController',
+			'action' => 'planningUpdate'
+		);
+
+		$routes['adminPlanningSeek'] = array(
+			'route' => '/admin/gestao/planejamento/buscar',
+			'controller' => 'Admin\\AdminPlanningController',
+			'action' => 'planningSeek'
+		);
+
+		$routes['adminPlanningData'] = array(
+			'route' => '/admin/gestao/planejamento/dados',
+			'controller' => 'Admin\\AdminPlanningController',
+			'action' => 'planningData'
+		);
+
+		$routes['adminPlanningDelete'] = array(
+			'route' => '/admin/gestao/planejamento/deletar',
+			'controller' => 'Admin\\AdminPlanningController',
+			'action' => 'planningDelete'
+		);
+
 		// Rotas referente a turma no portal do administrador
 
 		$routes['adminClassManagement'] = array(
@@ -481,7 +581,16 @@ class Route extends Bootstrap
 			'controller' => 'Admin\\AdminTeacherStudentController',
 			'action' => 'examInsert'
 		);
-
+        $routes['adminChamadaInsert'] = array(
+            'route' => '/admin/gestao/turma/perfil-turma/chamada/inserir',
+            'controller' => 'Admin\\AdminTeacherStudentController',
+            'action' => 'chamadaInsert'
+        );
+        $routes['adminChamadaHistorico'] = array(
+            'route' => '/admin/gestao/turma/perfil-turma/aluno/frequencia/lista',
+            'controller' => 'Admin\\AdminTeacherStudentController',
+            'action' => 'chamadaHistorico'
+        );
 		$routes['adminSumUnitGrades'] = array(
 			'route' => '/admin/gestao/turma/perfil-turma/avaliacoes/soma-notas-unidade',
 			'controller' => 'Admin\\AdminTeacherStudentController',

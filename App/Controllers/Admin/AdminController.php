@@ -63,11 +63,13 @@ class AdminController extends Action
 
         $Admin = Container::getModel('Admin\\Admin');
         $HierarchyFunction = Container::getModel('GeneralManagement\\HierarchyFunction');
+        $School = Container::getModel('GeneralManagement\\School');
 
         $this->view->availableSex = $Admin->availableSex();
         $this->view->pcd = $Admin->pcd();
         $this->view->bloodType = $Admin->availablebloodType();
         $this->view->listHierarchyFunction = $HierarchyFunction->listStateAdmin();
+        $this->view->listSchool = $School->listAll();
 
         $this->render('admin/adminRegistration', 'AdminLayout');
 
@@ -259,6 +261,7 @@ class AdminController extends Action
         $Admin->__set('email', $_POST['email']);
         $Admin->__set('fk_id_account_state', 1);
         $Admin->__set('fk_id_hierarchy_function', $_POST['hierarchyFunction']);
+        $Admin->__set('fk_id_school', $_POST['school']);
         $Admin->__set('fk_id_sex', $_POST['sex']);
         $Admin->__set('fk_id_blood_type', $_POST['bloodType']);
         $Admin->__set('fk_id_pcd', $_POST['pcd']);
