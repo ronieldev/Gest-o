@@ -253,6 +253,100 @@ $("#planning #buttonAddPlanning").on("click", function (e) {
 })
 
 
+$("#diary #classDisciplineAdd").on("change", function (e) {
+
+    let classDiscipline = $(this).val()
+
+    if (!classDiscipline) return
+
+    $.ajax({
+        url: "/portal-docente/diario/conteudo-sugerido",
+        type: "GET",
+        dataType: "json",
+        data: { classDiscipline: classDiscipline },
+        success: data => $("#diary #content").val(data && data.content_suggestion ? data.content_suggestion : ''),
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+    })
+
+})
+
+
+$("#diary #buttonAddDiary").on("click", function (e) {
+
+    let $formData = new FormData($("#addDiary")[0])
+
+    $.ajax({
+        url: "/portal-docente/diario/inserir",
+        type: "POST",
+        data: $formData,
+        contentType: false,
+        processData: false,
+        success: data => {
+
+            $("#addDiary")[0].reset()
+            tools.showToast("Lançamento adicionado", "bg-success")
+            application.loadListElements("containerListDiary", "/portal-docente/diario/lista")
+
+        },
+
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+
+    })
+
+})
+
+
+$(document).on("click", "#buttonAddDiaryAttachment", function (e) {
+
+    let diaryId = $(this).attr("diaryId")
+    let $formData = new FormData()
+
+    $.each($(`#inputNewDiaryAttachment${diaryId}`)[0].files, (i, file) => $formData.append("anexos[]", file))
+    $formData.append("diaryId", diaryId)
+
+    $.ajax({
+        url: "/portal-docente/diario/anexo/inserir",
+        type: "POST",
+        data: $formData,
+        contentType: false,
+        processData: false,
+        success: data => {
+
+            tools.showToast("Anexo adicionado", "bg-success")
+            application.showModal(`diary${diaryId}`, "/portal-docente/diario/dados", "containerModal", "#modalDiary")
+
+        },
+
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+
+    })
+
+})
+
+
+$(document).on("click", ".delete-diary-attachment-icon", function (e) {
+
+    let attachmentId = $(this).attr("attachmentId")
+    let $row = $(this).closest("[id^='attachment']")
+
+    $.ajax({
+        url: "/portal-docente/diario/anexo/deletar",
+        type: "POST",
+        data: { attachmentId: attachmentId },
+        success: data => {
+
+            $row.remove()
+            tools.showToast("Anexo removido", "bg-danger")
+
+        },
+
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+
+    })
+
+})
+
+
 $(document).on("click", "#addWarning #buttonAddWarning", function (e) {
     application.addSinglePart("#addWarning", "/admin/gestao/turma/perfil-turma/aviso/inserir", "Aviso adicionado")
 })
@@ -260,6 +354,35 @@ $(document).on("click", "#addWarning #buttonAddWarning", function (e) {
 
 $("#course #buttonAddCourse").on("click", function (e) {
     application.addSinglePart("#addCourse", "/admin/gestao/curso/inserir", "Curso adicionado")
+})
+
+
+$("#finance-management #buttonAddFinance").on("click", function (e) {
+    application.addSinglePart("#addFinance", "/admin/financeiro/inserir", "Cobrança gerada")
+    application.loadListElements("containerListFinance", "/admin/financeiro/lista")
+})
+
+
+$(document).on("click", "#buttonMarkAsPaid", function (e) {
+
+    let $formData = $($(this).attr("idElement")).serialize()
+
+    $.ajax({
+        url: "/admin/financeiro/marcar-pago",
+        type: "POST",
+        data: $formData,
+        success: data => {
+
+            tools.showToast("Cobrança marcada como paga", "bg-success")
+            application.loadListElements("containerListFinance", "/admin/financeiro/lista")
+            $("#modalFinance").modal("hide")
+
+        },
+
+        error: error => tools.showToast("Tente novamente mais tarde", "bg-info")
+
+    })
+
 })
 
 
@@ -341,6 +464,11 @@ $("#course #collapseListCourse").on("click", function (e) {
 })
 
 
+$("#finance-management #collapseListFinance").on("click", function (e) {
+    application.loadListElements("containerListFinance", "/admin/financeiro/lista")
+})
+
+
 $(document).on('click', "#profileClassModal [data-target='#class-note-history']", function (e) {
     application.loadListElements("containerListNote", "/admin/gestao/turma/perfil-turma/lista-notas", "#formClassId")
 })
@@ -358,6 +486,11 @@ $("#curriculum-grid #collapseListCurriculumGrid").on("click", function (e) {
 
 $("#planning #collapseListPlanning").on("click", function (e) {
     application.loadListElements("containerListPlanning", "/admin/gestao/planejamento/lista")
+})
+
+
+$("#diary #collapseListDiary").on("click", function (e) {
+    application.loadListElements("containerListDiary", "/portal-docente/diario/lista")
 })
 
 
@@ -552,8 +685,18 @@ $(document).on("click", "#curriculum-grid tr", function () {
 })
 
 
+$(document).on("click", "#finance-management tr", function () {
+    application.showModal(this.id, "/admin/financeiro/dados", "containerModal", "#modalFinance")
+})
+
+
 $(document).on("click", "#planning tr", function () {
     application.showModal(this.id, "/admin/gestao/planejamento/dados", "containerModal", "#modalPlanning")
+})
+
+
+$(document).on("click", "#diary tr", function () {
+    application.showModal(this.id, "/portal-docente/diario/dados", "containerModal", "#modalDiary")
 })
 
 
@@ -771,11 +914,6 @@ $(document).on("change", "#seekLackStudent select", function (e) {
 $("#seekClass .custom-select").change(() => application.loadListElements("containerListClass", "/admin/gestao/turma/buscar", "#seekClass"))
 
 
-$("#seekDiscipline select[name='seekModality']").change(() => application.loadListElements("containerListDiscipline", "/admin/gestao/disciplina/buscar", "#seekDiscipline"))
-
-$("#seekCurriculumGrid select[name='seekModality']").change(() => application.loadListElements("containerListCurriculumGrid", "/admin/gestao/grade-curricular/buscar", "#seekCurriculumGrid"))
-
-
 $("#seekStudent select").change(() => application.loadListElements("containerListStudent", "/admin/aluno/lista/buscar", "#seekStudent"))
 
 
@@ -785,7 +923,7 @@ $("#seekStudent select").change(() => application.loadListElements("containerLis
 //* Sessão de validação de dados
 
 
-let commonElements = ["#name , #birthDate", "#naturalness", "#nationality", "#motherName", "#fatherName", "#county", "#district", "#address", "#uf", "#email"]
+let commonElements = ["#name , #birthDate", "#naturalness", "#nationality", "#motherName", "#fatherName", "#county", "#district", "#address", "#uf", "#email", "#responsibleName", "#responsibleCpf", "#responsibleEmail", "#responsiblePhone"]
 
 commonElements.forEach(element => $(element).on("blur", e => validation.validateByContent(e.target.id)))
 
@@ -859,6 +997,10 @@ $(document).on("keypress", "#telephoneNumber", e => $(e.target).mask(("(00) 0000
 
 $(document).on("keypress", "#totalLack", e => $(e.target).mask(("00")))
 
+$(document).on("keypress", "#responsibleCpf", e => $(e.target).mask("000.000.000-00"))
+
+$(document).on("keypress", "#responsiblePhone", e => $(e.target).mask(("(00) 00000-0000")))
+
 $("input[name='acronym'] , input[name='uf']").on("keyup", e => e.target.value = e.target.value.toUpperCase())
 
 //$("#accessCode").on("keypress", e => $(e.target).mask("000.000.000"))
@@ -884,7 +1026,7 @@ $(document).on('keypress', '#accessCode', function (e) {
 
 
 $("[data-target='#student-registration-finishing']").on("click", function (e) {
-    validation.checkAllFields("#addStudent", 19, "#buttonAddStudent")
+    validation.checkAllFields("#addStudent", 23, "#buttonAddStudent")
 })
 
 

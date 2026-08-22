@@ -1321,11 +1321,26 @@ footer p {
 #table-print {
   background: white;
 }
+#table-print .header {
+  border: 2px solid #000;
+  padding: 15px 10px;
+}
 #table-print .header .logo-site {
   width: 15vw;
 }
-#table-print .header .logo-school {
+#table-print .header .logo-school-wrap {
   width: 8vw;
+  height: 8vw;
+  border-radius: 50%;
+  background-color: #14213d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8%;
+  box-sizing: border-box;
+}
+#table-print .header .logo-school {
+  width: 100%;
 }
 #table-print .header h4 {
   font-family: Bold;

@@ -122,21 +122,6 @@ class Management {
     }
 
 
-    randCode() {
-
-        var randPassword = Array(6).fill("0123456789").map(function (x) {
-
-                return x[Math.floor(Math.random() * x.length)]
-            }
-
-        ).join('').replace(/(\d{3})(\d{3})/, "$1.$2")
-
-        randPassword.length < 5 ? randPassword + '7' : ''
-
-        return randPassword
-    }
-
-
     availableLack() {
 
         let $form = $("#addLack").serialize()

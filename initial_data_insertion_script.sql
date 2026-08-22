@@ -47,6 +47,10 @@ INSERT INTO configuracao(fk_id_controle_unidade , fk_id_controle_rematricula) VA
 
 INSERT INTO `modalidade_curso` (`modalidade_curso`, `modalidade_curso_sigla`) VALUES ('Ensino Médio', 'EM'), ('Ensino Profissional, médio integrado', 'ET');
 
+INSERT INTO situacao_cobranca (situacao_cobranca) VALUES ('Pendente'),('Pago'),('Vencido'),('Cancelado');
+
+INSERT INTO configuracao_financeira (valor_mensalidade_padrao, dia_vencimento) VALUES (0.00, 10);
+
 
 
 

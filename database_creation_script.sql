@@ -1257,6 +1257,146 @@ ALTER TABLE `turma_disciplina`
   ADD CONSTRAINT `id_disciplina` FOREIGN KEY (`fk_id_disciplina`) REFERENCES `disciplina` (`id_disciplina`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `id_professor` FOREIGN KEY (`fk_id_professor`) REFERENCES `professor` (`id_professor`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `id_turma` FOREIGN KEY (`fk_id_turma`) REFERENCES `turma` (`id_turma`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `diario_professor`
+--
+
+CREATE TABLE `diario_professor` (
+  `id_diario` int(11) NOT NULL AUTO_INCREMENT,
+  `fk_id_turma_disciplina` int(11) NOT NULL,
+  `data_aula` date NOT NULL,
+  `conteudo` text NOT NULL,
+  `observacao_diario` text DEFAULT NULL,
+  `data_hora_lancamento` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_diario`),
+  KEY `fk_id_turma_disciplina_idx` (`fk_id_turma_disciplina`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `diario_professor_anexo`
+--
+
+CREATE TABLE `diario_professor_anexo` (
+  `id_anexo` int(11) NOT NULL AUTO_INCREMENT,
+  `fk_id_diario` int(11) NOT NULL,
+  `nome_original_arquivo` varchar(150) NOT NULL,
+  `nome_arquivo` varchar(150) NOT NULL,
+  `data_upload` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_anexo`),
+  KEY `fk_id_diario_idx` (`fk_id_diario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Limitadores para a tabela `diario_professor`
+--
+ALTER TABLE `diario_professor`
+  ADD CONSTRAINT `fk_diario_turma_disciplina` FOREIGN KEY (`fk_id_turma_disciplina`) REFERENCES `turma_disciplina` (`id_turma_disciplina`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Limitadores para a tabela `diario_professor_anexo`
+--
+ALTER TABLE `diario_professor_anexo`
+  ADD CONSTRAINT `fk_anexo_diario` FOREIGN KEY (`fk_id_diario`) REFERENCES `diario_professor` (`id_diario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `responsavel_financeiro`
+--
+
+CREATE TABLE `responsavel_financeiro` (
+  `id_responsavel_financeiro` int(11) NOT NULL AUTO_INCREMENT,
+  `nome_responsavel_financeiro` varchar(120) NOT NULL,
+  `cpf_responsavel_financeiro` bigint(11) NOT NULL,
+  `email_responsavel_financeiro` varchar(100) NOT NULL,
+  `fk_id_telefone_responsavel_financeiro` int(11) NOT NULL,
+  `fk_id_endereco_responsavel_financeiro` int(11) NOT NULL,
+  `asaas_customer_id` varchar(50) DEFAULT NULL,
+  `data_cadastro` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_responsavel_financeiro`),
+  KEY `fk_id_telefone_responsavel_financeiro_idx` (`fk_id_telefone_responsavel_financeiro`),
+  KEY `fk_id_endereco_responsavel_financeiro_idx` (`fk_id_endereco_responsavel_financeiro`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `situacao_cobranca`
+--
+
+CREATE TABLE `situacao_cobranca` (
+  `id_situacao_cobranca` int(11) NOT NULL AUTO_INCREMENT,
+  `situacao_cobranca` varchar(20) NOT NULL,
+  PRIMARY KEY (`id_situacao_cobranca`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `cobranca`
+--
+
+CREATE TABLE `cobranca` (
+  `id_cobranca` int(11) NOT NULL AUTO_INCREMENT,
+  `fk_id_aluno` int(11) NOT NULL,
+  `competencia` date NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `data_vencimento` date NOT NULL,
+  `fk_id_situacao_cobranca` int(11) NOT NULL,
+  `data_pagamento` datetime DEFAULT NULL,
+  `asaas_charge_id` varchar(50) DEFAULT NULL,
+  `link_pagamento` varchar(255) DEFAULT NULL,
+  `data_criacao` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id_cobranca`),
+  KEY `fk_id_aluno_cobranca_idx` (`fk_id_aluno`),
+  KEY `fk_id_situacao_cobranca_idx` (`fk_id_situacao_cobranca`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `configuracao_financeira`
+--
+
+CREATE TABLE `configuracao_financeira` (
+  `id_configuracao_financeira` int(11) NOT NULL AUTO_INCREMENT,
+  `valor_mensalidade_padrao` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `dia_vencimento` tinyint(2) NOT NULL DEFAULT 10,
+  PRIMARY KEY (`id_configuracao_financeira`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Vincula o aluno ao seu responsável financeiro
+--
+ALTER TABLE `aluno`
+  ADD COLUMN `fk_id_responsavel_financeiro` int(11) DEFAULT NULL AFTER `fk_id_situacao_geral_aluno`,
+  ADD KEY `fk_id_responsavel_financeiro_idx` (`fk_id_responsavel_financeiro`);
+
+--
+-- Limitadores para a tabela `responsavel_financeiro`
+--
+ALTER TABLE `responsavel_financeiro`
+  ADD CONSTRAINT `fk_responsavel_telefone` FOREIGN KEY (`fk_id_telefone_responsavel_financeiro`) REFERENCES `telefone` (`id_telefone`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_responsavel_endereco` FOREIGN KEY (`fk_id_endereco_responsavel_financeiro`) REFERENCES `endereco` (`id_endereco`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Limitadores para a tabela `cobranca`
+--
+ALTER TABLE `cobranca`
+  ADD CONSTRAINT `fk_cobranca_aluno` FOREIGN KEY (`fk_id_aluno`) REFERENCES `aluno` (`id_aluno`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_cobranca_situacao` FOREIGN KEY (`fk_id_situacao_cobranca`) REFERENCES `situacao_cobranca` (`id_situacao_cobranca`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Limitadores para a tabela `aluno` (responsável financeiro)
+--
+ALTER TABLE `aluno`
+  ADD CONSTRAINT `fk_aluno_responsavel_financeiro` FOREIGN KEY (`fk_id_responsavel_financeiro`) REFERENCES `responsavel_financeiro` (`id_responsavel_financeiro`) ON DELETE SET NULL ON UPDATE CASCADE;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

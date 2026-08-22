@@ -77,14 +77,15 @@ function imprimirChamada(botao) {
                 .col-nome { text-align: left !important; white-space: nowrap; width: 260px; padding-left: 6px !important; text-transform: uppercase; font-size: 10px; }
                 .footer { margin-top: 25px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; page-break-inside: avoid; }
                 .assinatura { width: 300px; border-top: 1px solid #000; text-align: center; padding-top: 4px; }
-                .logo-box { width: 44px; height: 44px; display: block; margin: 0 auto; }
+                .logo-circle { width: 44px; height: 44px; border-radius: 50%; background-color: #14213d; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-sizing: border-box; }
+                .logo-box { width: 80%; height: 80%; }
             </style>
         </head>
         <body>
             <table class="header-table">
                 <tr>
-                    <td style="width: 70px; text-align: center;"><img class="logo-box" src="/assets/img/cetepi-logo.jpg"></td>
-                    <td class="school-info"><strong>Centro Territorial de Educação Profissional de Itaparica</strong><br>Sistema de Gestão Educacional</td>
+                    <td style="width: 70px; text-align: center;"><div class="logo-circle"><img class="logo-box" src="/assets/img/logo-removebg-preview.png"></div></td>
+                    <td class="school-info"><strong>Skyward Academy</strong><br>Sistema de Gestão Educacional</td>
                     <td class="meta-info" style="width: 320px;"><div><strong>Referência:</strong> ${mesAno}</div><div><strong>Turma:</strong> ${turma}</div><div><strong>Professor(a):</strong> ${professor}</div></td>
                 </tr>
             </table>

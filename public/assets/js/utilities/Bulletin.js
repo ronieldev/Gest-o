@@ -39,13 +39,17 @@ $(document).on("click", "#printBuleetin", function (e) {
                             <div class="row d-flex justify-content-center">
 
                                 <h4 class="text-center col-lg-12">Boletim Escolar</h4>
-                                <h5 class="text-center col-lg-12">Centro Teritorial de Educação Profissional de Itaparica - ${schoolYear}</h5>
+                                <h5 class="text-center col-lg-12">Skyward Academy - ${schoolYear}</h5>
 
                             </div>
-                        
+
                         </div>
 
-                        <div class="col-3"><img class="logo-school d-block mx-auto" src="/assets/img/cetepi-logo.jpg"></div>
+                        <div class="col-3">
+                            <div class="logo-school-wrap d-block mx-auto">
+                                <img class="logo-school" src="/assets/img/logo-removebg-preview.png">
+                            </div>
+                        </div>
 
                     </div>
 

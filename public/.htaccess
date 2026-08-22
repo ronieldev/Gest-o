@@ -1,5 +1,13 @@
+# Bloqueia acesso direto a arquivos sensíveis, caso acabem dentro da pasta pública
+<FilesMatch "(\.env|\.sql|composer\.(json|lock))$">
+	Require all denied
+</FilesMatch>
+
+# Bloqueia acesso direto às pastas de código/dependências, caso acabem dentro da pasta pública
+RewriteEngine on
+RewriteRule ^(App|vendor)/ - [F,L]
+
 <IfModule mod_rewrite.c>
-	RewriteEngine on
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
 	RewriteRule ^(.*)$ index.php/$1 [L]

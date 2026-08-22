@@ -138,13 +138,7 @@ class Validation {
 
         if (totalFields == size) {
 
-            let accessCode = management.randCode()
-
             $(button).prop("disabled", false)
-
-            $('[accessCode]').text('').append(accessCode)
-
-            $('form #accessCode').val(accessCode)
 
             $('[containerRegistrationSuccess]').show()
 
